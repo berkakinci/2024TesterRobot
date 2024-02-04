@@ -5,8 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.ArrayList;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -14,12 +19,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
+  private int[] motorIDs = {1, 2, 3, 4,
+                            5, 6, 7, 8};
+  private ArrayList<CANSparkMax> motors = new ArrayList<CANSparkMax>();
+  private myCircleInator circleInator = new myCircleInator();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -30,6 +40,11 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+
+    
+    for ( int motorID : motorIDs ) {
+      motors.add(new CANSparkMax(motorID, CANSparkLowLevel.MotorType.kBrushless));
+    }
   }
 
   /**
@@ -40,7 +55,12 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    for( CANSparkMax motor : motors ) {
+      motor.set(circleInator.getY());
+    }
+    circleInator.rotate();
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
