@@ -107,6 +107,8 @@ doxygen {
 
     option 'generate_html', true
     option 'generate_latex', true
+    option 'use_pdflatex', true
+
     option 'recursive', true
     option 'warn_if_undocumented', false
     option 'generate_treeview', true
